@@ -4,14 +4,16 @@
   "description": "Your PWA description here",
   "main": "server.js",
   "scripts": {
-    "build": "cross-env NODE_ENV = webpack && production",
-    "build:prod": "webpack --mode=production",
-    "start": "node server.js",
     "heroku-postbuild": "cd client && npm install && npm run build",
-    "install": "npm install",
-    "server:dev": "cd ./server && npm run server",
-    "client:dev": "cd ./client && npm start",
-    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\""
+    "server": "cd ./server && npm run server",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cd ./client && npm run dev",
+    "start:dev": "cd ./client && npm run dev",
+    "start": "cd ./client && npm run start",
+    "build": "cd ./client && npm run build",
+    "install-all": "npm install && npm run install-client && npm run install-server",
+    "install-client": "npm install --prefix client",
+    "install-server": "npm install --prefix server"
   },
   "keywords": [],
   "author": "Your Name",
@@ -23,6 +25,7 @@
   "devDependencies": {
     "concurrently": "^5.2.0",
     "cross-env": "^7.0.3",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "webpack-cli": "^5.1.4"
   }
 }
