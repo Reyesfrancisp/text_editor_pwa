@@ -2,20 +2,24 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { GenerateSW } = require('workbox-webpack-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const is_prod = process.env.NODE_ENV === 'production';
 
 const plugins = [
+  new InjectManifest({
+    swSrc: './src-sw.js', // Path to your service worker file
+    swDest: 'service-worker.js', // Output service worker filename
+  }),
   new HtmlWebpackPlugin({
     title: 'Webpack Example',
-    template: './src/main.html'
-  })
+    template: './index.html'
+  }),
+  
 ];
 
 if (is_prod) {
-  plugins.push(new GenerateSW());
   plugins.push(new WebpackPwaManifest({
     name: 'Notes PWA App',
     short_name: 'NPWAApp',
@@ -69,39 +73,34 @@ module.exports = {
   plugins,
   module: {
     rules: [
-      // {
-      //   test: /\.css$/i,
-      //   use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      // },
+      // Rule for processing Sass files
       {
         test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          'style-loader',
-          // Translates CSS into CommonJS
-          'css-loader',
-          // Compiles Sass to CSS
-          'sass-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
+      // Rule for processing CSS files
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+      // Rule for processing image files
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
+      // Rule for transpiling JavaScript using Babel
       {
         test: /\.(?:js|mjs|cjs)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              ['@babel/preset-env', { targets: 'ie 9' }]
-            ]
+            presets: [['@babel/preset-env', { targets: 'ie 9' }]]
           }
         }
       }
     ],
-  },
+  },  
   optimization: {
     minimize: true,
     minimizer: [
