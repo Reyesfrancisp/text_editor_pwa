@@ -16,12 +16,12 @@ module.exports = () => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './src/index.html',
+        template: './src/js/index.html',
         filename: 'index.html',
         chunks: ['main'],
       }),
       new HtmlWebpackPlugin({
-        template: './src/install.html',
+        template: './src/js/install.html',
         filename: 'install.html',
         chunks: ['install'],
       }),
@@ -40,7 +40,7 @@ module.exports = () => {
         ],
       }),
       new InjectManifest({
-        swSrc: './src-sw.js', // path to your service worker file
+        swSrc: './src-sw.js',
         swDest: 'service-worker.js',
       }),
     ],
