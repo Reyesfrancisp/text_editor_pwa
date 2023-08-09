@@ -1,29 +1,42 @@
 import { openDB } from "idb";
 
 const DB_NAME = "jate";
-const DB_NUM = 1;
+const DB_STORE_NAME = "content"; // Use a different store name
+
+const DB_VERSION = 1;
 
 // Initialize the database
-const initdb = async () =>
-  openDB(DB_NAME, 1, {
-    upgrade(db) {
-      if (db.objectStoreNames.contains(DB_NAME)) {
-        console.log('jate database already exists');
-        return;
-      }
-      db.createObjectStore(DB_NAME, { keyPath: 'id', autoIncrement: true });
-      console.log('jate database created');
-    },
-  });
+const initDB = async () => {
+  try {
+    const db = await openDB(DB_NAME, DB_VERSION, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains(DB_STORE_NAME)) {
+          const store = db.createObjectStore(DB_STORE_NAME, {
+            keyPath: "id",
+            autoIncrement: true,
+          });
+          console.log(`Object store '${DB_STORE_NAME}' created`);
+        }
+      },
+    });
+    console.log("Database initialized");
+    return db;
+  } catch (error) {
+    console.error("Error initializing the database:", error);
+    return null;
+  }
+};
 
 // Add content to the database
 export const putDb = async (content) => {
   try {
-    const db = await openDB(DB_NAME, DB_NUM);
-    const tx = db.transaction(DB_NAME, "readwrite");
-    const store = tx.objectStore(DB_NAME);
-    await store.put({ value: content });
-    await tx.done;
+    const db = await initDB();
+    if (!db) return;
+
+    const tx = db.transaction(DB_STORE_NAME, "readwrite");
+    const store = tx.objectStore(DB_STORE_NAME);
+    await store.add({ value: content });
+    await tx.complete;
     console.log("Content added to the database:", content);
   } catch (error) {
     console.error("Error adding content to the database:", error);
@@ -33,10 +46,12 @@ export const putDb = async (content) => {
 // Get content from the database
 export const getDb = async () => {
   try {
+    const db = await initDB();
+    if (!db) return null;
+
     console.log("GET route from the database");
-    const db = await openDB(DB_NAME, DB_NUM);
-    const tx = db.transaction(DB_NAME, "readonly");
-    const store = tx.objectStore(DB_NAME);
+    const tx = db.transaction(DB_STORE_NAME, "readonly");
+    const store = tx.objectStore(DB_STORE_NAME);
     const request = store.get(DB_NUM);
     const result = await request;
     if (result) {
@@ -53,4 +68,4 @@ export const getDb = async () => {
 };
 
 // Initialize the database when the module is imported
-initdb();
+initDB(); // Make sure to call the initDB function to initialize the database
