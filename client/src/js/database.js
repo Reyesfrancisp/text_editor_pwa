@@ -1,7 +1,7 @@
 import { openDB } from "idb";
 
 const DB_NAME = "jate";
-const DB_STORE_NAME = "content"; // Use a different store name
+const DB_STORE_NAME = "content";
 
 const DB_VERSION = 1;
 
@@ -68,4 +68,4 @@ export const getDb = async () => {
 };
 
 // Initialize the database when the module is imported
-initDB(); // Make sure to call the initDB function to initialize the database
+initDB();
