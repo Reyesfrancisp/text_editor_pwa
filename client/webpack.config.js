@@ -19,10 +19,10 @@ module.exports = () => {
       // Webpack plugin that generates our html file and injects our bundles. 
       new HtmlWebpackPlugin({
         template: './index.html',
-        title: 'Contact Cards'
+        title: 'JATE'
       }),
      
-      // Injects our custom service worker
+      // Injects our service worker
       new InjectManifest({
         swSrc: './src-sw.js',
         swDest: 'src-sw.js',
@@ -32,11 +32,11 @@ module.exports = () => {
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
-        name: 'Contact Cards',
-        short_name: 'Contact',
-        description: 'Never forget your contacts!',
-        background_color: '#225ca3',
-        theme_color: '#225ca3',
+        name: 'Just Another Text Editor',
+        short_name: 'JATE',
+        description: 'A text editor to show the power of PWA',
+        background_color: '#000000',
+        theme_color: '#2f8f9e',
         start_url: './',
         publicPath: './',
         icons: [
@@ -59,7 +59,7 @@ module.exports = () => {
         {
           test: /\.m?js$/,
           exclude: /node_modules/,
-          // We use babel-loader in order to use ES6.
+          // We use babel-loader to use ES6.
           use: {
             loader: 'babel-loader',
             options: {

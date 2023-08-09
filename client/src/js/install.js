@@ -19,9 +19,9 @@ butInstall.addEventListener('click', async () => {
     const result = await deferredPrompt.userChoice;
 
     if (result.outcome === 'accepted') {
-      console.log('PWA installation accepted by user');
+      console.log('PWA installation accepted');
     } else {
-      console.log('PWA installation dismissed by user');
+      console.log('PWA installation canceled');
     }
 
     deferredPrompt = null; // Reset the deferredPrompt variable

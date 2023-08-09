@@ -1,24 +1,28 @@
 import { openDB } from "idb";
 
+const DB_NAME = "jate";
+const DB_NUM = 1;
+
+// Initialize the database
 const initdb = async () =>
-  openDB("jate", 1, {
+  openDB(DB_NAME, 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains("jate")) {
-        console.log("jate database already exists");
+      if (db.objectStoreNames.contains(DB_NAME)) {
+        console.log('jate database already exists');
         return;
       }
-      db.createObjectStore("jate", { keyPath: "id", autoIncrement: true });
-      console.log("jate database created");
+      db.createObjectStore(DB_NAME, { keyPath: 'id', autoIncrement: true });
+      console.log('jate database created');
     },
   });
 
 // Add content to the database
 export const putDb = async (content) => {
   try {
-    const db = await openDB();
-    const tx = db.transaction("jate", "readwrite");
-    const store = tx.objectStore("jate");
-    await store.put({id: 1, value: content});
+    const db = await openDB(DB_NAME, DB_NUM);
+    const tx = db.transaction(DB_NAME, "readwrite");
+    const store = tx.objectStore(DB_NAME);
+    await store.put({ value: content });
     await tx.done;
     console.log("Content added to the database:", content);
   } catch (error) {
@@ -26,18 +30,26 @@ export const putDb = async (content) => {
   }
 };
 
-// Get all content from the database
-export const getDb = async () => {console.log('GET from the database');
-const jateDb = await openDB('jate', 1);
-const tx = jateDb.transaction('jate', 'readonly');
-const store = tx.objectStore('jate');
-const request = store.get(1);
-const result = await request;
-result
-  ? console.log('🚀 - data retrieved from the database', result.value)
-  : console.log('🚀 - data not found in the database');
-// Check if a variable is defined and if it is, return it. See MDN Docs on Optional Chaining (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
-return result?.value;
+// Get content from the database
+export const getDb = async () => {
+  try {
+    console.log("GET route from the database");
+    const db = await openDB(DB_NAME, DB_NUM);
+    const tx = db.transaction(DB_NAME, "readonly");
+    const store = tx.objectStore(DB_NAME);
+    const request = store.get(DB_NUM);
+    const result = await request;
+    if (result) {
+      console.log("Data retrieved from the database:", result.value);
+      return result.value;
+    } else {
+      console.log("Data not found");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error getting data from the database:", error);
+    return null;
+  }
 };
 
 // Initialize the database when the module is imported

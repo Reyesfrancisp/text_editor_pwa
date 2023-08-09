@@ -12,7 +12,7 @@ export default class {
     }
 
     this.editor = CodeMirror(document.querySelector('#main'), {
-      value: header|| '',
+      value: header || '',
       mode: 'javascript',
       theme: 'monokai',
       lineNumbers: true,
