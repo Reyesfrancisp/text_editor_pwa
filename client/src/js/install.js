@@ -32,4 +32,5 @@ butInstall.addEventListener('click', async () => {
 // Add a handler for the `appinstalled` event
 window.addEventListener('appinstalled', (event) => {
   console.log('PWA app installed', event);
+  butInstall.style.display = 'none'; // Hide the install button
 });

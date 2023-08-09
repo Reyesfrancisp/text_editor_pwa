@@ -11,7 +11,7 @@ const initDB = async () => {
     const db = await openDB(DB_NAME, DB_KEY, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(DB_STORE_NAME)) {
-          const store = db.createObjectStore(DB_STORE_NAME, {
+          db.createObjectStore(DB_STORE_NAME, {
             keyPath: "id",
             autoIncrement: true,
           });
