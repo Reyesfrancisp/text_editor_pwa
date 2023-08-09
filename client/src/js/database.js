@@ -52,7 +52,7 @@ export const getDb = async () => {
     console.log("GET route from the database");
     const tx = db.transaction(DB_STORE_NAME, "readonly");
     const store = tx.objectStore(DB_STORE_NAME);
-    const request = store.get(DB_NUM);
+    const request = store.get(DB_KEY);
     const result = await request;
     if (result) {
       console.log("Data retrieved from the database:", result.value);
