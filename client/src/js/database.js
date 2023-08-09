@@ -15,10 +15,10 @@ const initdb = async () =>
 // Add content to the database
 export const putDb = async (content) => {
   try {
-    const db = await initdb();
+    const db = await openDB();
     const tx = db.transaction("jate", "readwrite");
     const store = tx.objectStore("jate");
-    await store.put(content);
+    await store.put({id: 1, value: content});
     await tx.done;
     console.log("Content added to the database:", content);
   } catch (error) {
@@ -27,19 +27,17 @@ export const putDb = async (content) => {
 };
 
 // Get all content from the database
-export const getDb = async () => {
-  try {
-    const db = await initdb();
-    const tx = db.transaction("jate", "readonly");
-    const store = tx.objectStore("jate");
-    const allContent = await store.getAll();
-    await tx.done;
-    console.log("All content from the database:", allContent);
-    return allContent;
-  } catch (error) {
-    console.error("Error getting content from the database:", error);
-    return [];
-  }
+export const getDb = async () => {console.log('GET from the database');
+const jateDb = await openDB('jate', 1);
+const tx = jateDb.transaction('jate', 'readonly');
+const store = tx.objectStore('jate');
+const request = store.get(1);
+const result = await request;
+result
+  ? console.log('🚀 - data retrieved from the database', result.value)
+  : console.log('🚀 - data not found in the database');
+// Check if a variable is defined and if it is, return it. See MDN Docs on Optional Chaining (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
+return result?.value;
 };
 
 // Initialize the database when the module is imported
