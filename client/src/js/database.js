@@ -3,12 +3,12 @@ import { openDB } from "idb";
 const DB_NAME = "jate";
 const DB_STORE_NAME = "content";
 
-const DB_VERSION = 1;
+const DB_KEY = 1;
 
 // Initialize the database
 const initDB = async () => {
   try {
-    const db = await openDB(DB_NAME, DB_VERSION, {
+    const db = await openDB(DB_NAME, DB_KEY, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(DB_STORE_NAME)) {
           const store = db.createObjectStore(DB_STORE_NAME, {
@@ -35,7 +35,7 @@ export const putDb = async (content) => {
 
     const tx = db.transaction(DB_STORE_NAME, "readwrite");
     const store = tx.objectStore(DB_STORE_NAME);
-    await store.add({ value: content });
+    await store.put({ id: DB_KEY, value: content });
     await tx.complete;
     console.log("Content added to the database:", content);
   } catch (error) {
